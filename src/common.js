@@ -176,7 +176,9 @@ function setup(env) {
 				continue;
 			}
 
-			namespaces = split[i].replace(/\*/g, '.*?');
+			// Only change: Escape special regex chars except * which is handled separately
+			namespaces = split[i].replace(/[|\\{}()[\]^$+?.]/g, '\\$&')
+				.replace(/\*/g, '.*?');
 
 			if (namespaces[0] === '-') {
 				createDebug.skips.push(new RegExp('^' + namespaces.slice(1) + '$'));

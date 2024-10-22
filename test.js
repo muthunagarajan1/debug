@@ -7,7 +7,7 @@ describe('debug', () => {
 	it('passes a basic sanity check', () => {
 		const log = debug('test');
 		log.enabled = true;
-		log.log = () => {};
+		log.log = () => { };
 
 		assert.doesNotThrow(() => log('hello world'));
 	});
@@ -15,7 +15,7 @@ describe('debug', () => {
 	it('allows namespaces to be a non-string value', () => {
 		const log = debug('test');
 		log.enabled = true;
-		log.log = () => {};
+		log.log = () => { };
 
 		assert.doesNotThrow(() => debug.enable(true));
 	});
@@ -47,7 +47,7 @@ describe('debug', () => {
 		it('should extend namespace', () => {
 			const log = debug('foo');
 			log.enabled = true;
-			log.log = () => {};
+			log.log = () => { };
 
 			const logBar = log.extend('bar');
 			assert.deepStrictEqual(logBar.namespace, 'foo:bar');
@@ -56,7 +56,7 @@ describe('debug', () => {
 		it('should extend namespace with custom delimiter', () => {
 			const log = debug('foo');
 			log.enabled = true;
-			log.log = () => {};
+			log.log = () => { };
 
 			const logBar = log.extend('bar', '--');
 			assert.deepStrictEqual(logBar.namespace, 'foo--bar');
@@ -65,7 +65,7 @@ describe('debug', () => {
 		it('should extend namespace with empty delimiter', () => {
 			const log = debug('foo');
 			log.enabled = true;
-			log.log = () => {};
+			log.log = () => { };
 
 			const logBar = log.extend('bar', '');
 			assert.deepStrictEqual(logBar.namespace, 'foobar');
@@ -73,7 +73,7 @@ describe('debug', () => {
 
 		it('should keep the log function between extensions', () => {
 			const log = debug('foo');
-			log.log = () => {};
+			log.log = () => { };
 
 			const logBar = log.extend('bar');
 			assert.deepStrictEqual(log.log, logBar.log);
@@ -135,6 +135,15 @@ describe('debug', () => {
 			debug.disable('*');
 			inst('@test4@');
 			assert.deepStrictEqual(messages, ['test2', 'test3']);
+		});
+	});
+
+	describe('enable namespace safety', () => {
+		it('should safely handle regex special characters', () => {
+			const pattern = 'test.+?*{}()[]\\';
+			debug.enable(pattern);
+			const instance = debug(pattern);
+			assert.strictEqual(instance.enabled, true);
 		});
 	});
 });
